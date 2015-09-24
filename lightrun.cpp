@@ -11,15 +11,39 @@ Lightrun::Lightrun(Adafruit_NeoPixel * pstrip) { //the constructor
       _start = 0;
       _end = 27;
       _current = 0;
-      _active = false;
+      _started = false;
       _pstrip = pstrip;
 }
 
-
-void Lightrun::flash() {
-     digitalWrite(WAITLEDPIN, HIGH);    
-     delay(10);
-     digitalWrite(WAITLEDPIN, LOW); 
-     delay(10);
-     Serial.println(_current);
+bool Lightrun::isDone() {
+    return _current > _end; 
 }
+
+void Lightrun::moveToNext() {
+     if (_started) {
+      _undoCurrentColor();  
+      _current += 1;
+    } else {
+      _started = true;
+    }
+
+    if (!isDone()) {
+      _setNewColor();
+    }  
+
+    Serial.print("Current val = ");
+    Serial.println(_current);
+    
+}
+
+
+void Lightrun::_undoCurrentColor() {
+  
+}
+
+
+void Lightrun::_setNewColor() {
+  
+}
+
+

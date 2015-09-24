@@ -15,14 +15,19 @@
 class Lightrun {
   public:
     Lightrun(Adafruit_NeoPixel *);
-    void flash();
+    bool isDone();
+    void moveToNext();
     
   private:
     int _start;
     int _end;
     int _current;
-    bool _active;
+    bool _started;
     Adafruit_NeoPixel * _pstrip;
+
+    void _undoCurrentColor();
+    void _setNewColor();
+    
  
 };
 

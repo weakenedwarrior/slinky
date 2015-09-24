@@ -17,9 +17,17 @@
 // Store timer here
 unsigned long timer = 0;
 
-// Buttons Data
+// Button setup and ISRs
 volatile bool button1pressed = false;
 volatile bool button2pressed = false;
+
+void setbutton1() {
+  button1pressed = true;
+}
+
+void setbutton2() {
+  button2pressed = true;
+}
 
 // Class for LED state
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(TOTALPIXELS , LEDCONTROLPIN, NEO_RGB + NEO_KHZ800);
@@ -30,7 +38,7 @@ LinkedList<Lightrun*> myLightRunsList = LinkedList<Lightrun*>();
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("Hello!" );
+  Serial.println("Starting Slinky!" );
 
   // Setup Button ISRs
   attachInterrupt(digitalPinToInterrupt(BUTTON1PIN), setbutton1, FALLING);
@@ -42,29 +50,18 @@ void loop() {
   
   // Add light runs if buttons are pressed
   processButtonPushes();
+  
+  // Loop through all light runs
+  processAll();
 
-  Serial.print("There are ");
-  Serial.print(myLightRunsList.size());
-  Serial.print(" lightruns in the list");
-  Serial.println(".");
-
-  // Loop through light runs
-  processLightRuns();
+  // Space out serial output
+  if (myLightRunsList.size() > 0) {
+    Serial.println("");
+  }
 
   // Wait for timer
   waitForTimer();
 
-  //removeLightRun(0);
-
-}
-
-
-//Button ISRs
-void setbutton1() {
-  button1pressed = true;
-}
-void setbutton2() {
-  button2pressed = true;
 }
 
 void processButtonPushes() {
@@ -72,13 +69,43 @@ void processButtonPushes() {
     addLightRun();
     button1pressed = false;
   }
-
   if (button2pressed) {
-    removeLightRun(0);
+    addLightRun();
     button2pressed = false;
   }
 }
 
+void addLightRun() {
+  // Create a LightRun
+  Lightrun *lightrun = new Lightrun(&strip);
+  myLightRunsList.add(lightrun);
+}
+
+void processAll() {
+  // Loop backwards through list, so that deletions don't mess up index
+  // of remaining elements
+  for(int i = myLightRunsList.size()-1; i >= 0; i--)
+    processLightRun(i);
+}
+
+void processLightRun(int i) {
+  // Get lightrun from list
+  Lightrun *lightrun = myLightRunsList.get(i);
+
+  // Get lightrun to do its thing, or delete itself if it's finished
+  if (lightrun->isDone()) {
+    removeLightRun(i);
+  } else {
+    lightrun->moveToNext();
+  }
+}
+
+void removeLightRun(int i) {
+  // Remove from linked list then delete
+  Lightrun *lightrun = myLightRunsList.get(i);
+  myLightRunsList.remove(i);
+  delete lightrun;
+}
 
 void waitForTimer() {
   if (timer != 0) {
@@ -89,24 +116,5 @@ void waitForTimer() {
   timer = millis();
 }
 
-void addLightRun() {
-  // Create a LightRun
-  Lightrun *lightrun = new Lightrun(&strip);
-  myLightRunsList.add(lightrun);
-}
+  
 
-void removeLightRun(int i) {
-  // Remove from linked list then delete
-  Lightrun *lightrun = myLightRunsList.get(i);
-  myLightRunsList.remove(i);
-  delete lightrun;
-}
-
-void processLightRuns() {
-  Lightrun *lightrun;
-  for(int i = 0; i < myLightRunsList.size(); i++){
-    // Get lightrun from list
-    lightrun = myLightRunsList.get(i);
-    lightrun->flash();
-  }
-}
