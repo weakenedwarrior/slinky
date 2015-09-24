@@ -31,19 +31,26 @@ void Lightrun::moveToNext() {
       _setNewColor();
     }  
 
-    Serial.print("Current val = ");
-    Serial.println(_current);
+    //Serial.print("Current val = ");
+    //Serial.println(_current);
     
 }
 
 
 void Lightrun::_undoCurrentColor() {
+
+ // uint32_t currentcolor = _pstrip->getPixelColor(_current);
+ //   uint32_t newcolour = wrapsub(currentcolor, color);
+  uint32_t black = _pstrip->Color(0, 0, 0);
+  _pstrip->setPixelColor(_current, black);
+
   
 }
 
 
 void Lightrun::_setNewColor() {
-  
+  uint32_t red = _pstrip->Color(0, 255, 150);
+  _pstrip->setPixelColor(_current, red);
 }
 
 

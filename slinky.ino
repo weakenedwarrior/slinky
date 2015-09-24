@@ -7,7 +7,7 @@
 #include "lightrun.h"
 
 
-#define CYCLEPERIOD   40    // milliseconds
+#define CYCLEPERIOD   20    // milliseconds
 #define BUTTON1PIN    18
 #define BUTTON2PIN    19
 #define BUTTONPRESSED 13
@@ -43,10 +43,15 @@ void setup() {
   // Setup Button ISRs
   attachInterrupt(digitalPinToInterrupt(BUTTON1PIN), setbutton1, FALLING);
   attachInterrupt(digitalPinToInterrupt(BUTTON2PIN), setbutton2, FALLING);
+
+  // Required to setup LED strip controller
+  strip.begin();
   
 }
 
 void loop() {
+  // The first thing we do is clock out all the LED values and then show them
+  strip.show();
   
   // Add light runs if buttons are pressed
   processButtonPushes();
@@ -55,9 +60,9 @@ void loop() {
   processAll();
 
   // Space out serial output
-  if (myLightRunsList.size() > 0) {
-    Serial.println("");
-  }
+  //if (myLightRunsList.size() > 0) {
+  //  Serial.println("");
+  //}
 
   // Wait for timer
   waitForTimer();
