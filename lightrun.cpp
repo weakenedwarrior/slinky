@@ -8,11 +8,22 @@
 
 
 Lightrun::Lightrun(Adafruit_NeoPixel * pstrip) { //the constructor
-      _start = 0;
-      _end = 27;
-      _current = 0;
-      _started = false;
       _pstrip = pstrip;
+      _color = 255;
+      _init();
+}
+
+Lightrun::Lightrun(Adafruit_NeoPixel * pstrip, uint32_t color) { //the constructor
+      _pstrip = pstrip;
+      _color = color;
+      _init();
+}
+
+void Lightrun::_init() {
+  _start = 0;
+  _end = 27;
+  _current = 0;
+  _started = false;
 }
 
 bool Lightrun::isDone() {
@@ -30,10 +41,6 @@ void Lightrun::moveToNext() {
     if (!isDone()) {
       _setNewColor();
     }  
-
-    //Serial.print("Current val = ");
-    //Serial.println(_current);
-    
 }
 
 
@@ -49,8 +56,7 @@ void Lightrun::_undoCurrentColor() {
 
 
 void Lightrun::_setNewColor() {
-  uint32_t red = _pstrip->Color(0, 255, 150);
-  _pstrip->setPixelColor(_current, red);
+  _pstrip->setPixelColor(_current, _color);
 }
 
 

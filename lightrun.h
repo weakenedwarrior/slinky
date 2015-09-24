@@ -15,6 +15,7 @@
 class Lightrun {
   public:
     Lightrun(Adafruit_NeoPixel *);
+    Lightrun(Adafruit_NeoPixel *, uint32_t);
     bool isDone();
     void moveToNext();
     
@@ -23,8 +24,11 @@ class Lightrun {
     int _end;
     int _current;
     bool _started;
+    uint32_t _color;
+    
     Adafruit_NeoPixel * _pstrip;
 
+    void _init();
     void _undoCurrentColor();
     void _setNewColor();
     

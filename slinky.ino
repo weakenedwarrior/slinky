@@ -82,7 +82,14 @@ void processButtonPushes() {
 
 void addLightRun() {
   // Create a LightRun
-  Lightrun *lightrun = new Lightrun(&strip);
+
+  int red = random(255);
+  int green = random(255);
+  int blue = random(255);
+  
+  uint32_t color = strip.Color(red, green, blue);
+  
+  Lightrun *lightrun = new Lightrun(&strip, color);
   myLightRunsList.add(lightrun);
 }
 
