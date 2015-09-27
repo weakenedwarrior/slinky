@@ -17,17 +17,21 @@ void Lightrun::_init() {
   _start = 0;
   _end = 27;
   _current = 0;
-  _spread = 5;
+  _spread = 10;
+  _dir = 1;
   _started = false;
 
   for (int i = 0; i < _spread; i++) {
-    _colorvector.push_back(_color);
+
+    uint32_t scaled_color = _colorscale(_color, 1/float(1<<i));
+    
+    _colorvector.push_back(scaled_color);
   }
   
 }
 
 bool Lightrun::isDone() {
-    return _current > _end; 
+    return _current > _end + _spread; 
 }
 
 void Lightrun::moveToNext() {
@@ -45,7 +49,7 @@ void Lightrun::moveToNext() {
 
 void Lightrun::_undoCurrentState() {
   for (int i = 0; i < _spread; i ++) {
-    _undoPixel(_current + i, _colorvector[i]); 
+    _undoPixel(_current - i*_dir, _colorvector[i]); 
   }
 }
 
@@ -60,8 +64,8 @@ void Lightrun::_incrementState() {
 }
 
 void Lightrun::_setNewState() {
-  for (int i = 0; i < _spread; i ++) {
-    _setPixel(_current + i, _colorvector[i]); 
+  for (int i = 0; i < _spread; i++) {
+    _setPixel(_current - i*_dir, _colorvector[i]); 
   }
 }
 
@@ -84,6 +88,14 @@ uint32_t Lightrun::_coloradd(uint32_t colorA, uint32_t colorB) {
     uint32_t blue = (_getColorByte(colorA, 0) + _getColorByte(colorB, 0)) % 0x100;
     return _pstrip->Color(red, green, blue);
 }
+
+uint32_t Lightrun:: _colorscale(uint32_t color, float scale) {
+    uint32_t red = int((_getColorByte(color, 2) * scale)) % 0x100;
+    uint32_t green = int((_getColorByte(color, 1) * scale)) % 0x100;
+    uint32_t blue = int((_getColorByte(color, 0) * scale)) % 0x100;
+    return _pstrip->Color(red, green, blue);
+}
+
 
 uint32_t Lightrun::_getColorByte(uint32_t fullcolor, int index) {
     uint32_t colorpiece = (fullcolor >> (8*index)) & 0xff;    

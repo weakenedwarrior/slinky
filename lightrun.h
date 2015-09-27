@@ -26,6 +26,7 @@ class Lightrun {
     int _end;
     int _current;
     int _spread;
+    int _dir;
     bool _started;
     uint32_t _color;
     std::vector<uint32_t> _colorvector;
@@ -36,6 +37,7 @@ class Lightrun {
 
     uint32_t _colorsubtract(uint32_t, uint32_t);
     uint32_t _coloradd(uint32_t, uint32_t);
+    uint32_t _colorscale(uint32_t color, float scale);
     uint32_t _getColorByte(uint32_t fullcolor, int index);
     
     void _undoCurrentState();
