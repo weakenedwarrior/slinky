@@ -1,7 +1,8 @@
 /*
   SLINKY - Script to control LEDs for Slinkypants Costume.
 */
-
+#include <StandardCplusplus.h>
+#include <vector>
 #include <Adafruit_NeoPixel.h>
 #include <LinkedList.h>
 #include "lightrun.h"
@@ -96,7 +97,9 @@ void addLightRun() {
 
 void addBounce() {
   // Create a Bounce
-  Bounce *bounce = new Bounce(&strip);
+  uint32_t red = strip.Color(255, 0, 0);
+  
+  Bounce *bounce = new Bounce(&strip, red);
   myLightRunsList.add(bounce);
 }
 

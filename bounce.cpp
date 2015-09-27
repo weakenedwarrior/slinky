@@ -4,10 +4,29 @@
 
 #include "bounce.h"
 
-Bounce::Bounce(Adafruit_NeoPixel * pstrip) : Lightrun(pstrip) { 
+Bounce::Bounce(Adafruit_NeoPixel * pstrip, uint32_t color) : Lightrun(pstrip, color) { 
     _bounces = 0;
-    _inc = 1;      
+    _inc = 1;   
+    //Serial.println("Started Bounce" );   
 }
+
+
+/*void Bounce::moveToNext() {
+     if (_started) {
+      _undoCurrentState(); 
+      _incrementState();
+    } else {
+      _started = true;
+    }
+
+    if (!isDone()) {
+      _setNewState();
+    }  
+    Serial.print("Bounce:moveToNext " ); 
+    Serial.println(_current);
+    
+}*/
+
 
 void Bounce::_incrementState() {
   if (_current > _end) {

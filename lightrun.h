@@ -7,6 +7,8 @@
 #ifndef lightrun_h
 #define lightrun_h
 
+#include <StandardCplusplus.h>
+#include <vector>
 #include <Adafruit_NeoPixel.h>
 #include "Arduino.h"
 
@@ -17,26 +19,32 @@ class Lightrun {
     Lightrun(Adafruit_NeoPixel *);
     Lightrun(Adafruit_NeoPixel *, uint32_t);
     virtual bool isDone();
-    void moveToNext();
+    virtual void moveToNext();
     
   protected:
     int _start;
     int _end;
     int _current;
+    int _spread;
     bool _started;
     uint32_t _color;
-    
+    std::vector<uint32_t> _colorvector;
     Adafruit_NeoPixel * _pstrip;
-
+    
+    virtual void _incrementState();
     void _init();
 
     uint32_t _colorsubtract(uint32_t, uint32_t);
     uint32_t _coloradd(uint32_t, uint32_t);
     uint32_t _getColorByte(uint32_t fullcolor, int index);
     
-    virtual void _undoCurrentState();
-    virtual void _setNewState();
-    virtual void _incrementState();
+    void _undoCurrentState();
+    void _setNewState();
+    
+    void _undoPixel(int pixel, uint32_t color);
+    void _setPixel(int pixel, uint32_t color);
+
+    
 
 
 };
