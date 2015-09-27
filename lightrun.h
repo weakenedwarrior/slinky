@@ -16,10 +16,10 @@ class Lightrun {
   public:
     Lightrun(Adafruit_NeoPixel *);
     Lightrun(Adafruit_NeoPixel *, uint32_t);
-    bool isDone();
+    virtual bool isDone();
     void moveToNext();
     
-  private:
+  protected:
     int _start;
     int _end;
     int _current;
@@ -29,10 +29,16 @@ class Lightrun {
     Adafruit_NeoPixel * _pstrip;
 
     void _init();
-    void _undoCurrentColor();
-    void _setNewColor();
+
+    uint32_t _colorsubtract(uint32_t, uint32_t);
+    uint32_t _coloradd(uint32_t, uint32_t);
+    uint32_t _getColorByte(uint32_t fullcolor, int index);
     
- 
+    virtual void _undoCurrentState();
+    virtual void _setNewState();
+    virtual void _incrementState();
+
+
 };
 
 

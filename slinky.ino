@@ -5,6 +5,7 @@
 #include <Adafruit_NeoPixel.h>
 #include <LinkedList.h>
 #include "lightrun.h"
+#include "bounce.h"
 
 
 #define CYCLEPERIOD   20    // milliseconds
@@ -75,7 +76,7 @@ void processButtonPushes() {
     button1pressed = false;
   }
   if (button2pressed) {
-    addLightRun();
+    addBounce();
     button2pressed = false;
   }
 }
@@ -92,6 +93,13 @@ void addLightRun() {
   Lightrun *lightrun = new Lightrun(&strip, color);
   myLightRunsList.add(lightrun);
 }
+
+void addBounce() {
+  // Create a Bounce
+  Bounce *bounce = new Bounce(&strip);
+  myLightRunsList.add(bounce);
+}
+
 
 void processAll() {
   // Loop backwards through list, so that deletions don't mess up index
