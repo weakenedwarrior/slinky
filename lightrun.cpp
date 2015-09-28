@@ -93,8 +93,8 @@ uint32_t Lightrun:: _colorscale(uint32_t color, float scale) {
     return _pstrip->Color(red, green, blue);
 }
 
-uint32_t Lightrun::_getColorByte(uint32_t fullcolor, int index) {
-    uint32_t colorpiece = (fullcolor >> (8*index)) & 0xff;    
+byte Lightrun::_getColorByte(uint32_t fullcolor, int index) {
+    byte colorpiece = (fullcolor >> (8*index)) & 0xff;    
     return colorpiece;
 }
 
