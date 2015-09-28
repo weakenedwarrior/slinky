@@ -11,23 +11,15 @@
 #include "lightrun.h"
 
 
-
 class Bounce : public Lightrun {
   public:
     Bounce(Adafruit_NeoPixel * strip, uint32_t color);
     bool isDone();
-    //void moveToNext();
     
   protected:
     int _bounces;
     int _inc;
     void _incrementState();
-    
- 
 };
-
-
-
-
 
 #endif

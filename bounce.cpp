@@ -5,6 +5,7 @@
 #include "bounce.h"
 
 Bounce::Bounce(Adafruit_NeoPixel * pstrip, uint32_t color) : Lightrun(pstrip, color) { 
+    _pattern = BOUNCE;
     _bounces = 0;   
     //Serial.println("Started Bounce" );   
 }

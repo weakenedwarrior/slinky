@@ -12,16 +12,18 @@
 #include <Adafruit_NeoPixel.h>
 #include "Arduino.h"
 
-#define WAITLEDPIN    13
+enum LightPattern : int { LIGHTRUN, BOUNCE, TRAIL };
 
 class Lightrun {
   public:
     Lightrun(Adafruit_NeoPixel *);
     Lightrun(Adafruit_NeoPixel *, uint32_t);
+    int getPattern();
     virtual bool isDone();
     virtual void moveToNext();
     
   protected:
+    int _pattern;
     int _start;
     int _end;
     int _current;
@@ -45,10 +47,6 @@ class Lightrun {
     
     void _undoPixel(int pixel, uint32_t color);
     void _setPixel(int pixel, uint32_t color);
-
-    
-
-
 };
 
 

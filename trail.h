@@ -9,8 +9,6 @@
 #include "Arduino.h"
 #include "lightrun.h"
 
-
-
 class Trail : public Lightrun {
   public:
     Trail(Adafruit_NeoPixel * strip, uint32_t pulsecolor, uint32_t fadecolor);
@@ -18,13 +16,8 @@ class Trail : public Lightrun {
     
   protected:
     uint32_t _fadecolor;
-    int _cycles_per_inc;
     int _fade_cycles;
     void _incrementState();
 };
-
-
-
-
 
 #endif

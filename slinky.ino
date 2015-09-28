@@ -9,7 +9,6 @@
 #include "bounce.h"
 #include "trail.h"
 
-
 #define CYCLEPERIOD   20    // milliseconds
 #define BUTTON1PIN    18
 #define BUTTON2PIN    19
@@ -38,9 +37,6 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(TOTALPIXELS , LEDCONTROLPIN, NEO_RGB
 // Global list of light runs
 LinkedList<Lightrun*> myLightRunsList = LinkedList<Lightrun*>();
 
-bool trailOK = true;
-
-
 void setup() {
   Serial.begin(9600);
   Serial.println("Starting Slinky!" );
@@ -51,7 +47,6 @@ void setup() {
 
   // Required to setup LED strip controller
   strip.begin();
-  
 }
 
 void loop() {
@@ -63,15 +58,9 @@ void loop() {
   
   // Loop through all light runs
   processAll();
-
-  // Space out serial output
-  //if (myLightRunsList.size() > 0) {
-  //  Serial.println("");
-  //}
-
+  
   // Wait for timer
   waitForTimer();
-
 }
 
 void processButtonPushes() {
@@ -108,18 +97,25 @@ void addBounce() {
 }
 
 void addTrail() {
-  if (trailOK) {
+  if (!activeTrailFound()) { 
     // Create a Trail
     uint32_t red = strip.Color(255, 0, 0);
     uint32_t darkblue = strip.Color(0, 0, 100);
-  
     Trail *trail = new Trail(&strip, red, darkblue);
     myLightRunsList.add(trail);
-    
-    trailOK = false;
-  }
+  }    
 }
 
+bool activeTrailFound() {
+  // Look for a "Trail" lightrun in myLightRunsList
+ for(int i = 0; i < myLightRunsList.size(); i++) {
+    Lightrun *lightrun = myLightRunsList.get(i);
+    if (lightrun->getPattern() == TRAIL) {
+      return true;
+    }
+  }
+  return false;
+}
 
 void processAll() {
   // Loop backwards through list, so that deletions don't mess up index

@@ -1,16 +1,12 @@
-/*
-  lightrun.cpp - A Library for creating lightruns
-*/
 #include "lightrun.h"
-
 
 Lightrun::Lightrun(Adafruit_NeoPixel * pstrip) : Lightrun(pstrip, pstrip->Color(255, 0, 0)) {}; //the constructor
 
 Lightrun::Lightrun(Adafruit_NeoPixel * pstrip, uint32_t color) { //the constructor
+      _pattern = LIGHTRUN;
       _pstrip = pstrip;
       _color = color;
       _init();
-      //Serial.println("Started Lightrun" );  
 }
 
 void Lightrun::_init() {
@@ -25,7 +21,10 @@ void Lightrun::_init() {
     uint32_t scaled_color = _colorscale(_color, 1/float(1<<i));
     _colorvector.push_back(scaled_color);
   }
-  
+}
+
+int Lightrun::getPattern() {
+  return _pattern;
 }
 
 bool Lightrun::isDone() {
@@ -93,7 +92,6 @@ uint32_t Lightrun:: _colorscale(uint32_t color, float scale) {
     uint32_t blue = int((_getColorByte(color, 0) * scale)) % 0x100;
     return _pstrip->Color(red, green, blue);
 }
-
 
 uint32_t Lightrun::_getColorByte(uint32_t fullcolor, int index) {
     uint32_t colorpiece = (fullcolor >> (8*index)) & 0xff;    
