@@ -7,13 +7,14 @@
 #include <LinkedList.h>
 #include "lightrun.h"
 #include "bounce.h"
+#include "trail.h"
 
 
 #define CYCLEPERIOD   20    // milliseconds
 #define BUTTON1PIN    18
 #define BUTTON2PIN    19
 #define BUTTONPRESSED 13
-#define LEDCONTROLPIN  6
+#define LEDCONTROLPIN  7
 #define TOTALPIXELS   28
 
 // Store timer here
@@ -36,6 +37,8 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(TOTALPIXELS , LEDCONTROLPIN, NEO_RGB
 
 // Global list of light runs
 LinkedList<Lightrun*> myLightRunsList = LinkedList<Lightrun*>();
+
+bool trailOK = true;
 
 
 void setup() {
@@ -73,11 +76,12 @@ void loop() {
 
 void processButtonPushes() {
   if (button1pressed) {
+    //addLightRun();
     addLightRun();
     button1pressed = false;
   }
   if (button2pressed) {
-    addBounce();
+    addTrail();
     button2pressed = false;
   }
 }
@@ -101,6 +105,19 @@ void addBounce() {
   
   Bounce *bounce = new Bounce(&strip, red);
   myLightRunsList.add(bounce);
+}
+
+void addTrail() {
+  if (trailOK) {
+    // Create a Trail
+    uint32_t red = strip.Color(255, 0, 0);
+    uint32_t darkblue = strip.Color(0, 0, 100);
+  
+    Trail *trail = new Trail(&strip, red, darkblue);
+    myLightRunsList.add(trail);
+    
+    trailOK = false;
+  }
 }
 
 
