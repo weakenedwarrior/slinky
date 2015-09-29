@@ -8,6 +8,7 @@
 #include "lightrun.h"
 #include "bounce.h"
 #include "trail.h"
+#include "jumpy.h"
 
 #define CYCLEPERIOD   20    // milliseconds
 #define BUTTON1PIN    18
@@ -70,7 +71,8 @@ void processButtonPushes() {
   if (button1pressed && button2pressed) {
     addTrail();
   } else if (button1pressed) {
-    addLightRun();
+    //addLightRun();
+    addJumpy();
   } else if (button2pressed) {
     addBounce();
   }
@@ -131,6 +133,12 @@ bool activeTrailFound() {
     }
   }
   return false;
+}
+
+void addJumpy() {
+  uint32_t white = strip.Color(255, 255, 255);
+  Jumpy *jumpy = new Jumpy(&strip, white);
+  myLightRunsList.add(jumpy);
 }
 
 void processAll() {

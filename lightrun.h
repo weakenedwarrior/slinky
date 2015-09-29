@@ -12,7 +12,7 @@
 #include <Adafruit_NeoPixel.h>
 #include "Arduino.h"
 
-enum LightPattern : int { LIGHTRUN, BOUNCE, TRAIL };
+enum LightPattern : int { LIGHTRUN, BOUNCE, TRAIL, JUMPY };
 
 class Lightrun {
   public:
