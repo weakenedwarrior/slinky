@@ -3,7 +3,7 @@
 Trail::Trail(Adafruit_NeoPixel * pstrip, uint32_t pulsecolor, uint32_t fadecolor) : Lightrun(pstrip, pulsecolor) {
     _pattern = TRAIL; 
     _fadecolor = fadecolor;
-    _fade_cycles = 100;
+    _fade_cycles = 20;
     
     for (int i = 1; i < _spread; i++) {
       uint32_t newcolor = _coloradd(_fadecolor, _colorvector[i]);

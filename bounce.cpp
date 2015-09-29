@@ -11,16 +11,18 @@ Bounce::Bounce(Adafruit_NeoPixel * pstrip, uint32_t color) : Lightrun(pstrip, co
 }
 
 void Bounce::_incrementState() {
-  if (_current > _end) {
+  if (_current > _end || _current < _start) {
     _bounces += 1;
-    _dir = -1;
-  } else if (_current < _start) {
-    _bounces += 1;
-    _dir = +1;
-  }     
+    _dir = -_dir; 
+
+    // Fade for each bounce
+    for (int i = 0; i < _colorvector.size(); i++) {
+      _colorvector[i] = _colorscale(_colorvector[i], 0.5);
+    }    
+  }    
   _current += _dir;
 }
 
 bool Bounce::isDone() {
-    return _bounces >= 4; 
+    return _bounces >= 10; 
 }

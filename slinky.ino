@@ -19,6 +19,9 @@
 // Store timer here
 unsigned long timer = 0;
 
+// Store Bounce count
+unsigned long bounce_count = 0;
+
 // Button setup and ISRs
 volatile bool button1pressed = false;
 volatile bool button2pressed = false;
@@ -64,15 +67,18 @@ void loop() {
 }
 
 void processButtonPushes() {
-  if (button1pressed) {
-    //addLightRun();
-    addLightRun();
-    button1pressed = false;
-  }
-  if (button2pressed) {
+  if (button1pressed && button2pressed) {
     addTrail();
-    button2pressed = false;
+  } else if (button1pressed) {
+    addLightRun();
+  } else if (button2pressed) {
+    addBounce();
   }
+    
+  // Reset  
+  button1pressed = false;
+  button2pressed = false;
+  
 }
 
 void addLightRun() {
@@ -90,9 +96,19 @@ void addLightRun() {
 
 void addBounce() {
   // Create a Bounce
-  uint32_t red = strip.Color(255, 0, 0);
+
+  uint32_t nextcolor;
+  byte modcount = bounce_count % 3;
+  if (modcount == 0) {
+    nextcolor = strip.Color(255, 0, 0);
+  } else if (modcount == 1) {
+    nextcolor = strip.Color(0, 255, 0);
+  } else {
+    nextcolor = strip.Color(0, 0, 255);
+  }
+  bounce_count += 1;
   
-  Bounce *bounce = new Bounce(&strip, red);
+  Bounce *bounce = new Bounce(&strip, nextcolor);
   myLightRunsList.add(bounce);
 }
 
