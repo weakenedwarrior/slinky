@@ -10,15 +10,18 @@
 #include "trail.h"
 #include "jumpy.h"
 
-#define CYCLEPERIOD   20    // milliseconds
-#define BUTTON1PIN    18
-#define BUTTON2PIN    19
-#define BUTTONPRESSED 13
-#define LEDCONTROLPIN  7
-#define TOTALPIXELS   28
+#define CYCLEPERIOD          20    // milliseconds
+#define BUTTON1PIN           18
+#define BUTTON2PIN           19
+#define BUTTONPRESSED        13
+#define LEDCONTROLPIN         7
+#define TOTALPIXELS          28
+#define BUTTON_RESET_DELAY  100    // milliseconds
 
-// Store timer here
+// Store timers here
 unsigned long timer = 0;
+unsigned long button1timer = 0;
+unsigned long button2timer = 0;
 
 // Store Bounce count
 unsigned long bounce_count = 0;
@@ -78,8 +81,17 @@ void processButtonPushes() {
   }
     
   // Reset  
-  button1pressed = false;
-  button2pressed = false;
+  if (button1pressed) {
+    button1timer = millis();
+    button1pressed = false;
+    detachInterrupt(digitalPinToInterrupt(BUTTON1PIN));
+  }
+  if (button2pressed) {
+    button2timer = millis();
+    button2pressed = false;
+    detachInterrupt(digitalPinToInterrupt(BUTTON2PIN));
+  }
+
   
 }
 
@@ -170,7 +182,21 @@ void removeLightRun(int i) {
 void waitForTimer() {
   if (timer != 0) {
     // Wait until at least the scan period has elapsed
-    while(millis() - timer < CYCLEPERIOD) {};
+    while(millis() - timer < CYCLEPERIOD) {
+
+      // Monitor button timers too
+      if (button1timer != 0 && millis() - button1timer > BUTTON_RESET_DELAY) {
+        attachInterrupt(digitalPinToInterrupt(BUTTON1PIN), setbutton1, FALLING);
+        button1timer = 0;
+        button1pressed = false;
+      }
+      if (button2timer != 0 && millis() - button2timer > BUTTON_RESET_DELAY) {
+        attachInterrupt(digitalPinToInterrupt(BUTTON2PIN), setbutton2, FALLING);
+        button2timer = 0;
+        button2pressed = false;
+      }
+
+    };
   }
   // Set the next timer
   timer = millis();
