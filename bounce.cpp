@@ -21,6 +21,7 @@ void Bounce::_incrementState() {
     }    
   }    
   _current += _dir;
+  Serial.println(_current);
 }
 
 bool Bounce::isDone() {

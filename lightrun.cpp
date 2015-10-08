@@ -11,7 +11,7 @@ Lightrun::Lightrun(Adafruit_NeoPixel * pstrip, uint32_t color) { //the construct
 
 void Lightrun::_init() {
   _start = 0;
-  _end = 27;
+  _end = 50;
   _current = 0;
   _spread = 10;
   _dir = 1;
@@ -58,6 +58,7 @@ void Lightrun::_undoPixel(int pixel, uint32_t color) {
 
 void Lightrun::_incrementState() {
   _current += 1;
+  Serial.println(_current);
 }
 
 void Lightrun::_setNewState() {
