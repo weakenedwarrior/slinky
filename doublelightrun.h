@@ -13,12 +13,16 @@
 
 class DoubleLightrun : public Lightrun {
   public:
-    DoubleLightrun(Adafruit_NeoPixel * pstrip, uint32_t color);
+    DoubleLightrun(Adafruit_NeoPixel * pstripA, Adafruit_NeoPixel * pstripB, uint32_t color);
     
   protected:
-    void _init();
+    Adafruit_NeoPixel * _pstripA;
+    Adafruit_NeoPixel * _pstripB;
+  
     void _undoPixel(int pixel, uint32_t color);
     void _setPixel(int pixel, uint32_t color);
+
+    
     
 };
 

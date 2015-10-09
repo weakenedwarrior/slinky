@@ -1,37 +1,61 @@
 #include "doublelightrun.h"
                 
-DoubleLightrun::DoubleLightrun(Adafruit_NeoPixel * pstrip, uint32_t color) : Lightrun(pstrip, color) { 
-      _pattern = LIGHTRUN;
-      _pstrip = pstrip;
-      _color = color;
-      _init();
+DoubleLightrun::DoubleLightrun(Adafruit_NeoPixel * pstripA, Adafruit_NeoPixel * pstripB, uint32_t color) : Lightrun(pstripA, color) { 
+  _pattern = DOUBLELIGHTRUN;
+  _pstripA = pstripA;
+  _pstripB = pstripB;
+  _end = 100;
 }
 
-void DoubleLightrun::_init() {
-  _start = 0;
-  _end = 50;
-  _current = 0;
-  _spread = 10;
-  _dir = 1;
-  _started = false;
-
-  for (int i = 0; i < _spread; i++) {
-    uint32_t scaled_color = _colorscale(_color, 1/float(1<<i));
-    _colorvector.push_back(scaled_color);
-  }
-}
-
+// Maps pixel into either stripA or stripB as well as pin.
+//
+//   Pixel #        0-----------49  50-----------99
+//
+//   Pin #          49-----------0  0------------49
+//
+//   Strips         |------------|  |-------------|
+//                     stripA           stripB
+//
 void DoubleLightrun::_undoPixel(int pixel, uint32_t color) {
-  uint32_t current_color = _pstrip->getPixelColor(pixel);
+  Adafruit_NeoPixel * pstrip;  
+  int pin;
+  int mid = _end/2;
+  
+  if (pixel < mid) {
+    pstrip = _pstripA;
+    pin = mid - pixel - 1;
+  } else {
+    pstrip = _pstripB;
+    pin = pixel - mid;
+  }
+  
+  uint32_t current_color = pstrip->getPixelColor(pin);
   uint32_t old_color = _colorsubtract(current_color, color);
-  _pstrip->setPixelColor(pixel, old_color);
+  pstrip->setPixelColor(pin, old_color);
 }
 
 void DoubleLightrun::_setPixel(int pixel, uint32_t color) {
-  uint32_t current_color = _pstrip->getPixelColor(pixel);
+  Adafruit_NeoPixel * pstrip;  
+  int pin;
+  int mid = _end/2;
+  
+  if (pixel < mid) {
+    pstrip = _pstripA;
+    pin = mid - pixel - 1;
+  } else {
+    pstrip = _pstripB;
+    pin = pixel - mid;
+  }
+
+  //Serial.print(pixel);
+  //Serial.print("\t");
+  //Serial.println(pin);
+  
+  uint32_t current_color = pstrip->getPixelColor(pin);
   uint32_t new_color = _coloradd(current_color, color);
-  _pstrip->setPixelColor(pixel, new_color);
+  pstrip->setPixelColor(pin, new_color);
 }
+
 
 
 

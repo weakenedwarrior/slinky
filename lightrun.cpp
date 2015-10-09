@@ -13,12 +13,13 @@ void Lightrun::_init() {
   _start = 0;
   _end = 50;
   _current = 0;
-  _spread = 10;
+  _spread = 20;
   _dir = 1;
   _started = false;
 
   for (int i = 0; i < _spread; i++) {
-    uint32_t scaled_color = _colorscale(_color, 1/float(1<<i));
+    //uint32_t scaled_color = _colorscale(_color, 1/float(1<<i));
+    uint32_t scaled_color = _colorscale(_color, 1 - float(i)/_spread);
     _colorvector.push_back(scaled_color);
   }
 }
@@ -41,7 +42,7 @@ void Lightrun::moveToNext() {
 
     if (!isDone()) {
       _setNewState();
-    }  
+    } 
 }
 
 void Lightrun::_undoCurrentState() {
@@ -58,7 +59,6 @@ void Lightrun::_undoPixel(int pixel, uint32_t color) {
 
 void Lightrun::_incrementState() {
   _current += 1;
-  Serial.println(_current);
 }
 
 void Lightrun::_setNewState() {

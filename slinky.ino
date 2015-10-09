@@ -9,8 +9,9 @@
 #include "bounce.h"
 #include "trail.h"
 #include "jumpy.h"
+#include "doublelightrun.h"
 
-#define CYCLEPERIOD          20    // milliseconds
+#define CYCLEPERIOD          10    // milliseconds
 #define BUTTON1PIN           18
 #define BUTTON2PIN           19
 #define BUTTON3PIN           20
@@ -114,11 +115,13 @@ void processButtonPushes() {
     addBounce();
   }*/
   if (button1pressed) {
-    addLightRun1(red);
+    addDoubleLightrun(0, 1, red);
+    //addLightRun1(red);
     //addBounce();
   } 
   if (button2pressed) {
-    addLightRun2(green);
+    addDoubleLightrun(1, 0, red);
+    //addLightRun2(red);
   } 
   if (button3pressed) {
     addLightRun3(blue);
@@ -200,6 +203,13 @@ void addJumpy() {
   Jumpy *jumpy = new Jumpy(&striparray[0], white);
   myLightRunsList.add(jumpy);
 }
+
+void addDoubleLightrun(int start, int finish, uint32_t color) {
+  DoubleLightrun *dblrun = new DoubleLightrun(&striparray[start], &striparray[finish], color);
+  myLightRunsList.add(dblrun);
+}
+
+
 
 void processAll() {
   // Loop backwards through list, so that deletions don't mess up index

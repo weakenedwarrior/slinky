@@ -35,7 +35,7 @@ class Lightrun {
     Adafruit_NeoPixel * _pstrip;
     
     virtual void _incrementState();
-    void _init();
+    virtual void _init();
 
     uint32_t _colorsubtract(uint32_t, uint32_t);
     uint32_t _coloradd(uint32_t, uint32_t);
@@ -45,8 +45,8 @@ class Lightrun {
     void _undoCurrentState();
     void _setNewState();
     
-    void _undoPixel(int pixel, uint32_t color);
-    void _setPixel(int pixel, uint32_t color);
+    virtual void _undoPixel(int pixel, uint32_t color);
+    virtual void _setPixel(int pixel, uint32_t color);
 };
 
 
