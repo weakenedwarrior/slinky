@@ -12,12 +12,12 @@
 #include <Adafruit_NeoPixel.h>
 #include "Arduino.h"
 
-enum LightPattern : int { LIGHTRUN, BOUNCE, TRAIL, JUMPY };
+enum LightPattern : int { LIGHTRUN, DOUBLELIGHTRUN, BOUNCE, TRAIL, JUMPY };
 
 class Lightrun {
   public:
-    Lightrun(Adafruit_NeoPixel *);
-    Lightrun(Adafruit_NeoPixel *, uint32_t);
+    Lightrun(Adafruit_NeoPixel * pstrip);
+    Lightrun(Adafruit_NeoPixel * pstrip, uint32_t color);
     int getPattern();
     virtual bool isDone();
     virtual void moveToNext();

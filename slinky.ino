@@ -19,6 +19,7 @@
 #define LEDCONTROLPIN2        9
 #define LEDCONTROLPIN3       10
 #define LEDCONTROLPIN4       11
+#define STRIPCOUNT            4
 #define TOTALPIXELS          50
 #define BUTTON_RESET_DELAY  100    // milliseconds
 
@@ -49,10 +50,16 @@ void setbutton3() {
 }
 
 // Classes for LED state
-Adafruit_NeoPixel strip1 = Adafruit_NeoPixel(TOTALPIXELS , LEDCONTROLPIN1, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(TOTALPIXELS , LEDCONTROLPIN2, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel strip3 = Adafruit_NeoPixel(TOTALPIXELS , LEDCONTROLPIN3, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel strip4 = Adafruit_NeoPixel(TOTALPIXELS , LEDCONTROLPIN4, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel striparray[4] = {Adafruit_NeoPixel(TOTALPIXELS , LEDCONTROLPIN1, NEO_GRB + NEO_KHZ800), 
+                                   Adafruit_NeoPixel(TOTALPIXELS , LEDCONTROLPIN2, NEO_GRB + NEO_KHZ800),
+                                   Adafruit_NeoPixel(TOTALPIXELS , LEDCONTROLPIN3, NEO_GRB + NEO_KHZ800),
+                                   Adafruit_NeoPixel(TOTALPIXELS , LEDCONTROLPIN4, NEO_GRB + NEO_KHZ800)};
+
+uint32_t red = striparray->Color(255, 0, 0);
+uint32_t green = striparray->Color(0, 255, 0);
+uint32_t blue = striparray->Color(0, 0, 255);
+uint32_t darkblue = striparray->Color(0, 0, 100);
+uint32_t white = striparray->Color(255, 255, 255);
 
 // Global list of light runs
 LinkedList<Lightrun*> myLightRunsList = LinkedList<Lightrun*>();
@@ -66,19 +73,13 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(BUTTON2PIN), setbutton2, FALLING);
   attachInterrupt(digitalPinToInterrupt(BUTTON3PIN), setbutton3, FALLING);
 
-  // Required to setup LED strip controller
-  strip1.begin();
-  strip2.begin();
-  strip3.begin();
-  strip4.begin();
+  // Setup LED strip controllers
+  beginStrips();
 }
 
 void loop() {
   // The first thing we do is clock out all the LED values and then show them
-  strip1.show();
-  strip2.show();
-  strip3.show();
-  strip4.show();
+  showStrips();
   
   // Add light runs if buttons are pressed
   processButtonPushes();
@@ -90,6 +91,19 @@ void loop() {
   waitForTimer();
 }
 
+void beginStrips() {
+  for(int i=0; i< STRIPCOUNT; i++) {
+    striparray[i].begin(); 
+  }
+}
+
+void showStrips() {
+  for(int i=0; i< STRIPCOUNT; i++) {
+    striparray[i].show(); 
+  }
+}
+
+
 void processButtonPushes() {
   /*if (button1pressed && button2pressed) {
     addTrail();
@@ -99,16 +113,15 @@ void processButtonPushes() {
   } else if (button2pressed) {
     addBounce();
   }*/
-
   if (button1pressed) {
-    addLightRun1(strip1.Color(0, 255, 0));
+    addLightRun1(red);
     //addBounce();
   } 
   if (button2pressed) {
-    addLightRun2(strip2.Color(255, 0, 0));
+    addLightRun2(green);
   } 
   if (button3pressed) {
-    addLightRun3(strip3.Color(0, 0, 255));
+    addLightRun3(blue);
   }
     
   // Reset  
@@ -132,17 +145,17 @@ void processButtonPushes() {
 }
 
 void addLightRun1(uint32_t color) {
-  Lightrun *lightrun = new Lightrun(&strip1, color);
+  Lightrun *lightrun = new Lightrun(&striparray[0], color);
   myLightRunsList.add(lightrun);
 }
 
 void addLightRun2(uint32_t color) {
-  Lightrun *lightrun = new Lightrun(&strip2, color);
+  Lightrun *lightrun = new Lightrun(&striparray[1], color);
   myLightRunsList.add(lightrun);
 }
 
 void addLightRun3(uint32_t color) {
-  Lightrun *lightrun = new Lightrun(&strip3, color);
+  Lightrun *lightrun = new Lightrun(&striparray[2], color);
   myLightRunsList.add(lightrun);
 }
 
@@ -152,24 +165,22 @@ void addBounce() {
   uint32_t nextcolor;
   byte modcount = bounce_count % 3;
   if (modcount == 0) {
-    nextcolor = strip1.Color(255, 0, 0);
+    nextcolor = red;
   } else if (modcount == 1) {
-    nextcolor = strip1.Color(0, 255, 0);
+    nextcolor = green;
   } else {
-    nextcolor = strip1.Color(0, 0, 255);
+    nextcolor = blue;
   }
   bounce_count += 1;
   
-  Bounce *bounce = new Bounce(&strip1, nextcolor);
+  Bounce *bounce = new Bounce(&striparray[0], nextcolor);
   myLightRunsList.add(bounce);
 }
 
 void addTrail() {
   if (!activeTrailFound()) { 
     // Create a Trail
-    uint32_t red = strip1.Color(255, 0, 0);
-    uint32_t darkblue = strip1.Color(0, 0, 100);
-    Trail *trail = new Trail(&strip1, red, darkblue);
+    Trail *trail = new Trail(&striparray[0], red, darkblue);
     myLightRunsList.add(trail);
   }    
 }
@@ -186,8 +197,7 @@ bool activeTrailFound() {
 }
 
 void addJumpy() {
-  uint32_t white = strip1.Color(255, 255, 255);
-  Jumpy *jumpy = new Jumpy(&strip1, white);
+  Jumpy *jumpy = new Jumpy(&striparray[0], white);
   myLightRunsList.add(jumpy);
 }
 
