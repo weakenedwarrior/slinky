@@ -12,8 +12,8 @@
 #include "doublelightrun.h"
 
 #define CYCLEPERIOD          10    // milliseconds
-#define BUTTON1PIN           18
-#define BUTTON2PIN           19
+#define BUTTON1PIN            2
+#define BUTTON2PIN            3
 #define BUTTON3PIN           20
 #define BUTTONPRESSED        13
 #define LEDCONTROLPIN1        8
@@ -120,7 +120,7 @@ void processButtonPushes() {
     //addBounce();
   } 
   if (button2pressed) {
-    addDoubleLightrun(1, 0, red);
+    addDoubleLightrun(2, 3, red);
     //addLightRun2(red);
   } 
   if (button3pressed) {
